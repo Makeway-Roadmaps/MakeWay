@@ -41,7 +41,7 @@ exports.auth = async (req, res, next) => {
   }
 };
 
-exports.isPassenger = async (req, res, next) => {
+exports.isUser = async (req, res, next) => {
   try {
     if (req.user.role != "user") {
       return res.status(401).json({

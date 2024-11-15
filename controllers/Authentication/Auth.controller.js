@@ -85,16 +85,8 @@ exports.resendOtp = async (req, res) => {
 // Signup Logic
 exports.signup = async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword,
-      phoneNumber,
-      countryCode,
-      otp,
-    } = req.body;
+    const { firstName, lastName, email, password, confirmPassword, otp } =
+      req.body;
 
     // Check if all required fields are present
     if (
@@ -103,8 +95,6 @@ exports.signup = async (req, res) => {
       !email ||
       !password ||
       !confirmPassword ||
-      !phoneNumber ||
-      !countryCode ||
       !otp
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -151,14 +141,12 @@ exports.signup = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      phoneNumber,
-      countryCode,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`,
     });
 
     res.status(200).json({
       message: "User created successfully",
-      user: { firstName, lastName, email, phoneNumber, countryCode },
+      user: { firstName, lastName, email },
       success: true,
     });
   } catch (error) {
@@ -170,28 +158,19 @@ exports.signup = async (req, res) => {
 // login logic
 exports.login = async (req, res) => {
   try {
-    const { emailOrPhone, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!emailOrPhone || !password) {
+    if (!email || !password) {
       return res
         .status(400)
-        .json({ message: "Please enter both email/phone and password" });
+        .json({ message: "Please enter both email and password" });
     }
 
-    // Split country code and phone number if provided
-    const isPhone = emailOrPhone.startsWith("+");
-    let user;
-    if (isPhone) {
-      const [countryCode, phoneNumber] = emailOrPhone.split(" ");
-      user = await User.findOne({ countryCode, phoneNumber });
-    } else {
-      user = await User.findOne({
-        $or: [{ email: emailOrPhone }, { phoneNumber: emailOrPhone }],
-      });
-    }
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
+    // check if user exists 
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -202,8 +181,6 @@ exports.login = async (req, res) => {
     const payload = {
       _id: user._id,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      countryCode: user.countryCode,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,

@@ -19,7 +19,6 @@ const mailSender = async (to, subject, text) => {
         pass: MAIL_PASS,
       },
     });
-
     // Send email
     // Define the email content
     const emailContent = `
