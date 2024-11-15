@@ -8,6 +8,8 @@ const {
 const { auth } = require("../../Middlewares/authentication.Middleware");
 
 // route mounting
+
+// use localhost:8000/api/v1 for testing
 router.post("/signup", signup);
 router.post("/otp-Sender", otpSender);
 router.post("/login", login);

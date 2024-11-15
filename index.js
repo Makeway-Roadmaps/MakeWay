@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", AuthRoutes);
 
+
 // port activation
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
