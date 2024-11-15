@@ -19,15 +19,6 @@ exports.auth = async (req, res, next) => {
     try {
       // Verify the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // console.log("Decoded User Data:", decoded);
-
-      // req.user = {
-      //   // id: decoded.id,
-      //   email: decoded.email,
-      //   name: decoded.name,
-      //   role: decoded.role,
-      //   passengerType: decoded.passengerType,
-      // };
       req.user = decoded;
       // Assign the decoded data to req.user
       next();
