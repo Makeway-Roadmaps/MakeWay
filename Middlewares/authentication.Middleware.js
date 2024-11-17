@@ -15,7 +15,6 @@ exports.auth = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: "Token not found" });
     }
-
     try {
       // Verify the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -32,6 +31,9 @@ exports.auth = async (req, res, next) => {
   }
 };
 
+
+//is user middleware 
+
 exports.isUser = async (req, res, next) => {
   try {
     if (req.user.role != "user") {
@@ -46,6 +48,9 @@ exports.isUser = async (req, res, next) => {
     });
   }
 };
+
+
+// is user middlware
 exports.isAdmin = async (req, res, next) => {
   try {
     if (req.user && req.user.role === "admin") {
