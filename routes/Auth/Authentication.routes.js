@@ -1,18 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const {
-  signup,
-  otpSender,
-  login,
-} = require("../../controllers/Authentication/Auth.controller");
+const UserControllers = require("../../controllers/Authentication/Auth.controller");
 const { auth } = require("../../Middlewares/authentication.Middleware");
 
 // route mounting
 
 // use localhost:8000/api/v1 for testing
-router.post("/signup", signup);
-router.post("/otp-Sender", otpSender);
-router.post("/login", login);
+router.post("/signup", UserControllers.signup);
+router.post("/otp-Sender", UserControllers.otpSender);
+router.post("/resend-otp", UserControllers.resendOtp);
+router.post("/login", UserControllers.login);
 
 //protected routes
 
