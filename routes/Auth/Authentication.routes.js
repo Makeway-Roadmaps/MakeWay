@@ -11,6 +11,11 @@ router.post("/otp-Sender", UserControllers.otpSender);
 router.post("/resend-otp", UserControllers.resendOtp);
 router.post("/login", UserControllers.login);
 
+// router.post("/forgotPassword", UserControllers.forgotPassword);
+// router.post("/resetPassword", UserControllers.resetPassword);
+
+// router.put("/profile", auth, UserControllers.updateProfile);
+router.put("/change-password", auth, UserControllers.updatePassword);
 //protected routes
 
 router.get("/user", auth, (req, res) => {
