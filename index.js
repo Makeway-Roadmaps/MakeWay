@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 const Database = require("./config/DataBase");
 const AuthRoutes = require("./routes/Auth/Authentication.routes");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -19,9 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", AuthRoutes);
 
-
 // port activation
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  const url = `http://localhost:${PORT}`;
+  console.log(`Server is running on \x1b]8;;${url}\x1b\\${url}\x1b]8;;\x1b\\`);
 });
