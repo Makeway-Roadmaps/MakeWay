@@ -42,40 +42,42 @@ exports.otpSender = async (req, res) => {
 };
 
 // Resend OTP function
+
+// resend otp entry with email
 exports.resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
 
+    // Check if email is provided
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    const otpRecord = await OTP.findOne({ email });
-    if (!otpRecord) {
-      return res
-        .status(404)
-        .json({ message: "No OTP request found for this email" });
+    // Find the existing OTP entry
+    const existingOtpEntry = await OTP.findOne({ email });
+
+    // If an OTP entry exists, delete it (clean up old OTP)
+    if (existingOtpEntry) {
+      await OTP.deleteOne({ email });
     }
 
-    let newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log(newOtp);
-    let otpExists = await OTP.findOne({ otp: newOtp });
+    // Generate a new OTP
+    let generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    let otpExists = await OTP.findOne({ otp: generatedOtp });
 
+    // Ensure the OTP is unique
     while (otpExists) {
-      newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      otpExists = await OTP.findOne({ otp: newOtp });
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpExists = await OTP.findOne({ otp: generatedOtp });
     }
 
-    await OTP.findOneAndUpdate(
-      { email },
-      { otp: newOtp, createdAt: Date.now() },
-      { new: true, upsert: true }
-    );
-    await mailSender(email, newOtp);
+    // Save the new OTP entry
+    await OTP.create({ email, otp: generatedOtp });
+    console.log("New OTP entry created:", generatedOtp);
 
     res.status(200).json({
       success: true,
-      message: "New OTP sent successfully",
+      message: "OTP resent successfully",
     });
   } catch (error) {
     console.error("Error occurred while resending OTP:", error);
